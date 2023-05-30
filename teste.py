@@ -20,7 +20,7 @@ def registrar_producao():
     if produto in producao_df['Produto'].values:
         producao_df.loc[producao_df['Produto'] == produto, 'Quantidade'] += quantidade
     else:
-        novo_produto = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}
+        novo_produto = pd.DataFrame({'Produto': [produto], 'Quantidade': [quantidade], 'Defeitos': [0]})
         producao_df = producao_df.append(novo_produto, ignore_index=True)
 
     # Verifica se a coluna "Defeitos" existe no DataFrame
