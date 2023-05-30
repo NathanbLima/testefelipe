@@ -1,22 +1,22 @@
 import streamlit as st
 import pandas as pd
-import gspread
 
-# Abre o arquivo do Google Sheets
+# URL do arquivo do Google Sheets
 spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
-gc = gspread.open_by_url(spreadsheet_url)
-worksheet = gc.sheet1
 
-# Criação de um DataFrame vazio para armazenar os dados
-df_dados_producao = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
+# Segmentação "Mostrar estatísticas"
+st.header("Estatísticas")
+df_dados_producao = pd.read_csv(spreadsheet_url)
+st.dataframe(df_dados_producao)
 
 # Menu lateral com as segmentações
-opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
+opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos"))
 
 # Função para salvar os dados no Google Sheets
 def salvar_dados(produto, quantidade, defeitos):
-    nova_linha = [produto, quantidade, defeitos]
-    worksheet.append_row(nova_linha)
+    nova_linha = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': defeitos}
+    df_dados_producao = df_dados_producao.append(nova_linha, ignore_index=True)
+    df_dados_producao.to_csv(spreadsheet_url, index=False)
 
 # Segmentação "Registrar produção"
 if opcao == "Registrar produção":
@@ -35,14 +35,3 @@ elif opcao == "Registrar defeitos":
     if st.button("Salvar"):
         salvar_dados(produto, 0, defeitos)
         st.success("Dados salvos com sucesso!")
-
-# Segmentação "Mostrar estatísticas"
-elif opcao == "Mostrar estatísticas":
-    st.header("Estatísticas")
-    df_dados_producao = pd.DataFrame(worksheet.get_all_records())
-    st.dataframe(df_dados_producao)
-
-# Botão para zerar os dados
-if st.button("Zerar Dados"):
-    worksheet.clear()
-    st.success("Dados zerados com sucesso!")
