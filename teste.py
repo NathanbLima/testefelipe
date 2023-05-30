@@ -4,7 +4,7 @@ import gspread
 
 # Abre o arquivo do Google Sheets
 spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
-gc = gspread.open_by_url(spreadsheet_url)
+worksheet = gc.open_by_url(spreadsheet_url).sheet1
 worksheet = gc.sheet1
 
 # Criação de um DataFrame vazio para armazenar os dados
