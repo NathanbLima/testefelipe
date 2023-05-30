@@ -17,7 +17,9 @@ opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Reg
 if st.button("Zerar todos os dados"):
     lista_dados_producao = []
     lista_dados_defeitos = []
+    st.cache.clear()
     st.success("Todos os dados foram zerados com sucesso!")
+
 
 
 
