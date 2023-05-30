@@ -13,18 +13,19 @@ def salvar_dados_producao():
 
 # Função para registrar a produção
 def registrar_producao():
-    global producao_df  # Adicione essa linha
+    global producao_df
     produto = st.text_input("Digite o nome do produto:")
     quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, step=1, value=0)
 
-    # Verifica se o produto já existe no DataFrame
     if produto in producao_df['Produto'].values:
-        # Atualiza a quantidade de produção
         producao_df.loc[producao_df['Produto'] == produto, 'Quantidade'] += quantidade
     else:
-        # Adiciona uma nova linha para o produto
         novo_produto = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}
         producao_df = producao_df.append(novo_produto, ignore_index=True)
+
+    # Verifica se a coluna "Defeitos" existe no DataFrame
+    if 'Defeitos' not in producao_df.columns:
+        producao_df['Defeitos'] = 0  # Adiciona a coluna "Defeitos" com valores iniciais de zero
 
     # Salva os dados atualizados no arquivo Excel
     salvar_dados_producao()
