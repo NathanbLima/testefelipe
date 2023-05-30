@@ -1,13 +1,15 @@
-pip install openpyxl
-
 import streamlit as st
 import pandas as pd
 
-# Carrega os dados de produção a partir da planilha Excel ou cria uma nova se o arquivo não existir
+# Carrega os dados de produção a partir do arquivo Excel ou cria um novo DataFrame vazio
 try:
     producao_df = pd.read_excel('dados_producao.xlsx')
 except FileNotFoundError:
     producao_df = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
+
+# Função para salvar os dados de produção no arquivo Excel
+def salvar_dados_producao():
+    producao_df.to_excel('dados_producao.xlsx', index=False)
 
 # Função para registrar a produção
 def registrar_producao():
@@ -23,8 +25,8 @@ def registrar_producao():
         novo_produto = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}
         producao_df = producao_df.append(novo_produto, ignore_index=True)
 
-    # Salva os dados atualizados na planilha Excel
-    producao_df.to_excel('dados_producao.xlsx', index=False)
+    # Salva os dados atualizados no arquivo Excel
+    salvar_dados_producao()
 
 # Função para registrar os defeitos
 def registrar_defeitos():
@@ -34,8 +36,8 @@ def registrar_defeitos():
     # Atualiza a quantidade de defeitos para o produto selecionado
     producao_df.loc[producao_df['Produto'] == produto, 'Defeitos'] += defeitos
 
-    # Salva os dados atualizados na planilha Excel
-    producao_df.to_excel('dados_producao.xlsx', index=False)
+    # Salva os dados atualizados no arquivo Excel
+    salvar_dados_producao()
 
 # Função para exibir os dados de produção e informações adicionais
 def exibir_dados_producao():
@@ -56,11 +58,19 @@ def exibir_dados_producao():
 
 # Configurações iniciais
 st.set_page_config(page_title="Análise de Produção", layout="wide")
+
+# Título e descrição
 st.title("Análise de Produção")
+st.write("Este programa permite registrar e analisar os dados de produção.")
 
 # Menu de interações
-escolha = st.sidebar.selectbox("Escolha uma opção:", ['Registrar Produção', 'Registrar Defeitos', 'Visualizar Dados'])
+opcoes_menu = ["Registrar Produção", "Registrar Defeitos", "Visualizar Dados"]
+escolha = st.sidebar.selectbox("Selecione uma opção:", opcoes_menu)
 
-if escolha == 'Registrar Produção':
+# Realiza a ação com base na escolha do usuário
+if escolha == "Registrar Produção":
     registrar_producao()
-   
+elif escolha == "Registrar Defeitos":
+    registrar_defeitos()
+elif escolha == "Visualizar Dados":
+    exibir_dados_producao()
