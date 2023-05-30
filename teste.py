@@ -32,7 +32,7 @@ def registrar_producao():
 
 # Função para registrar os defeitos
 def registrar_defeitos():
-    global producao_df  # Adicione essa linha
+    global producao_df
     produto = st.text_input("Digite o nome do produto:")
     defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, step=1, value=0)
 
