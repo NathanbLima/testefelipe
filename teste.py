@@ -12,6 +12,15 @@ lista_dados_producao = carregar_dados_producao()
 # Menu lateral com 3 segmentações
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
 
+
+# Botão para zerar os dados
+if st.button("Zerar todos os dados"):
+    lista_dados_producao = []
+    lista_dados_defeitos = []
+    st.success("Todos os dados foram zerados com sucesso!")
+
+
+
 # Segmentação "Registrar produção"
 if opcao == "Registrar produção":
     st.subheader("Registrar produção")
@@ -31,10 +40,6 @@ if opcao == "Registrar produção":
                 'Defeitos': 0
             })
         st.success("Dados de produção registrados com sucesso!")
-        
-if st.button("Zerar dados"):
-        lista_dados_producao = []
-        st.success("Dados de produção zerados com sucesso!")
 
 # Segmentação "Registrar defeitos"
 elif opcao == "Registrar defeitos":
