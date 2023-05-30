@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-# Criação de um DataFrame vazio
-df_dados_producao = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
+# Criação de uma lista vazia para armazenar os dados
+lista_dados_producao = []
 
 # Menu lateral com 3 segmentações
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
@@ -13,11 +13,11 @@ if opcao == "Registrar produção":
     produto = st.text_input("Digite o nome do produto:")
     quantidade = st.number_input("Digite a quantidade de peças produzidas:", min_value=0, step=1)
     if st.button("Salvar"):
-        df_dados_producao = df_dados_producao.append({
+        lista_dados_producao.append({
             'Produto': produto,
             'Quantidade': quantidade,
             'Defeitos': 0
-        }, ignore_index=True)
+        })
         st.success("Dados de produção registrados com sucesso!")
 
 # Segmentação "Registrar defeitos"
@@ -26,8 +26,13 @@ elif opcao == "Registrar defeitos":
     produto = st.text_input("Digite o nome do produto:")
     defeitos = st.number_input("Digite a quantidade de peças defeituosas:", min_value=0, step=1)
     if st.button("Salvar"):
-        if produto in df_dados_producao['Produto'].values:
-            df_dados_producao.loc[df_dados_producao['Produto'] == produto, 'Defeitos'] += defeitos
+        produto_encontrado = False
+        for item in lista_dados_producao:
+            if item['Produto'] == produto:
+                item['Defeitos'] += defeitos
+                produto_encontrado = True
+                break
+        if produto_encontrado:
             st.success("Dados de defeitos registrados com sucesso!")
         else:
             st.error("Produto não encontrado!")
@@ -36,8 +41,9 @@ elif opcao == "Registrar defeitos":
 elif opcao == "Mostrar estatísticas":
     st.subheader("Estatísticas")
     st.write("Tabela de produção e defeitos por produto:")
+    df_dados_producao = pd.DataFrame(lista_dados_producao)
     st.table(df_dados_producao)
 
 # Exibir DataFrame atualizado
 st.write("Dados de produção atualizados:")
-st.write(df_dados_producao)
+st.write(pd.DataFrame(lista_dados_producao))
