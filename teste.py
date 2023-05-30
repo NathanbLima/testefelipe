@@ -1,17 +1,10 @@
 import streamlit as st
 import pandas as pd
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
-# Configuração das credenciais do Google Sheets
-scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
-credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-client = gspread.authorize(credentials)
 
 # Abre o arquivo do Google Sheets
 spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
-gc = client.open_by_url(spreadsheet_url)
+gc = gspread.open_by_url(spreadsheet_url)
 worksheet = gc.sheet1
 
 # Criação de um DataFrame vazio para armazenar os dados
@@ -46,7 +39,8 @@ elif opcao == "Registrar defeitos":
 # Segmentação "Mostrar estatísticas"
 elif opcao == "Mostrar estatísticas":
     st.header("Estatísticas")
-    df_dados_producao = pd.DataFrame(worksheet.get_all_records())
+    dados = worksheet.get_all_values()
+    df_dados_producao = pd.DataFrame(dados[1:], columns=dados[0])
     st.dataframe(df_dados_producao)
 
 # Botão para zerar os dados
