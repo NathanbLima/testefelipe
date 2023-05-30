@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
-import gspread
 
-# Abre o arquivo do Google Sheets
-spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
-worksheet = gc.open_by_url(spreadsheet_url).sheet1
-worksheet = gc.sheet1
+# URL do Google Sheets público
+spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit#gid=2069898541'
 
 # Criação de um DataFrame vazio para armazenar os dados
 df_dados_producao = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
@@ -15,8 +12,8 @@ opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Reg
 
 # Função para salvar os dados no Google Sheets
 def salvar_dados(produto, quantidade, defeitos):
-    nova_linha = [produto, quantidade, defeitos]
-    worksheet.append_row(nova_linha)
+    novo_dados = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': defeitos}
+    df_dados_producao.loc[len(df_dados_producao)] = novo_dados
 
 # Segmentação "Registrar produção"
 if opcao == "Registrar produção":
@@ -39,11 +36,10 @@ elif opcao == "Registrar defeitos":
 # Segmentação "Mostrar estatísticas"
 elif opcao == "Mostrar estatísticas":
     st.header("Estatísticas")
-    dados = worksheet.get_all_values()
-    df_dados_producao = pd.DataFrame(dados[1:], columns=dados[0])
+    df_dados_producao = pd.read_csv(spreadsheet_url)
     st.dataframe(df_dados_producao)
 
 # Botão para zerar os dados
 if st.button("Zerar Dados"):
-    worksheet.clear()
+    df_dados_producao = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
     st.success("Dados zerados com sucesso!")
