@@ -6,11 +6,11 @@ dados_producao = []
 
 while True:
     st.sidebar.title("Menu")
-    opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
+    opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"), key="menu_opcao")
 
     if opcao == "Registrar produção":
-        produto = st.text_input("Digite o produto:")
-        quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, value=0, step=1)
+        produto = st.text_input("Digite o produto:", key="produto")
+        quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, value=0, step=1, key="quantidade")
 
         dados_producao.append({
             'Produto': produto,
@@ -19,8 +19,8 @@ while True:
         })
 
     elif opcao == "Registrar defeitos":
-        produto = st.text_input("Digite o produto com defeito:")
-        defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, value=0, step=1)
+        produto = st.text_input("Digite o produto com defeito:", key="produto_defeito")
+        defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, value=0, step=1, key="quantidade_defeitos")
 
         # Atualizar o número de defeitos para o produto correspondente
         for item in dados_producao:
@@ -40,7 +40,7 @@ while True:
         st.write("Média de erros semanais:")
         st.write(df_dados_producao['Defeitos'].mean())
 
-    if not st.sidebar.button("Continuar"):
+    if not st.sidebar.button("Continuar", key="continuar"):
         break
 
 # Salvar os dados em uma planilha Excel
