@@ -13,7 +13,7 @@ lista_dados_producao = carregar_dados_producao()
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
 
 # Segmentação "Registrar produção"
-elif opcao == "Registrar produção":
+if opcao == "Registrar produção":
     st.subheader("Registrar produção")
     produto = st.text_input("Digite o nome do produto:")
     quantidade = st.number_input("Digite a quantidade de peças produzidas:", min_value=0, step=1)
