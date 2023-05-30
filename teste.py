@@ -1,8 +1,20 @@
 import streamlit as st
 import pandas as pd
 
-# URL do arquivo do Google Sheets
-spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
+import streamlit as st
+import pandas as pd
+
+# URL do arquivo .xlsx
+spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit#gid=2069898541'
+
+# Nome da planilha
+nome_planilha = 'Planilha1'
+
+# Lê o arquivo .xlsx e cria o DataFrame
+df_dados_producao = pd.read_excel(spreadsheet_url, sheet_name=nome_planilha)
+
+# Exibe o DataFrame
+st.dataframe(df_dados_producao)
 
 # Segmentação "Mostrar estatísticas"
 st.header("Estatísticas")
