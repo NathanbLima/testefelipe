@@ -13,17 +13,25 @@ lista_dados_producao = carregar_dados_producao()
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
 
 # Segmentação "Registrar produção"
-if opcao == "Registrar produção":
+elif opcao == "Registrar produção":
     st.subheader("Registrar produção")
     produto = st.text_input("Digite o nome do produto:")
     quantidade = st.number_input("Digite a quantidade de peças produzidas:", min_value=0, step=1)
     if st.button("Salvar"):
-        lista_dados_producao.append({
-            'Produto': produto,
-            'Quantidade': quantidade,
-            'Defeitos': 0
-        })
+        produto_encontrado = False
+        for item in lista_dados_producao:
+            if item['Produto'] == produto:
+                item['Quantidade'] += quantidade
+                produto_encontrado = True
+                break
+        if not produto_encontrado:
+            lista_dados_producao.append({
+                'Produto': produto,
+                'Quantidade': quantidade,
+                'Defeitos': 0
+            })
         st.success("Dados de produção registrados com sucesso!")
+
 
 # Segmentação "Registrar defeitos"
 elif opcao == "Registrar defeitos":
