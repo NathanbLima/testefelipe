@@ -1,17 +1,31 @@
 import streamlit as st
 import pandas as pd
 
-# URL do arquivo .xlsx
+import streamlit as st
+import pandas as pd
+import pygsheets
+
+# URL do Google Sheets
 spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit#gid=2069898541'
 
-# Nome da planilha
-nome_planilha = 'Planilha1'
+# Abrir o Google Sheets usando a URL
+gc = pygsheets.authorize(service_file=None)
 
-# Lê o arquivo .xlsx e cria o DataFrame
-df_dados_producao = pd.read_excel(spreadsheet_url, sheet_name=nome_planilha)
+# Abrir a planilha
+sh = gc.open_by_url(spreadsheet_url)
 
-# Exibe o DataFrame
+# Obter a planilha desejada
+worksheet = sh.sheet1
+
+# Obter os valores da planilha
+dados = worksheet.get_all_values()
+
+# Criar o DataFrame
+df_dados_producao = pd.DataFrame(dados[1:], columns=dados[0])
+
+# Exibir o DataFrame
 st.dataframe(df_dados_producao)
+
 
 # Segmentação "Mostrar estatísticas"
 st.header("Estatísticas")
