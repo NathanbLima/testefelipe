@@ -25,6 +25,8 @@ def registrar_producao():
 
     # Verifica se a coluna "Defeitos" existe no DataFrame
     if 'Defeitos' not in producao_df.columns:
+producao_df = producao_df.append(novo_produto, ignore_index=True)
+
         producao_df['Defeitos'] = 0  # Adiciona a coluna "Defeitos" com valores iniciais de zero
 
     # Salva os dados atualizados no arquivo Excel
