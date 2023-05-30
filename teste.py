@@ -20,7 +20,7 @@ def registrar_producao():
     if produto in producao_df['Produto'].values:
         producao_df.loc[producao_df['Produto'] == produto, 'Quantidade'] += quantidade
     else:
-        novo_produto = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}
+        novo_produto = pd.DataFrame({'Produto': [produto], 'Quantidade': [quantidade], 'Defeitos': [0]})
         producao_df = producao_df.append(novo_produto, ignore_index=True)
 
     # Verifica se a coluna "Defeitos" existe no DataFrame
@@ -62,18 +62,4 @@ def exibir_dados_producao():
 # Configurações iniciais
 st.set_page_config(page_title="Análise de Produção", layout="wide")
 
-# Título e descrição
-st.title("Análise de Produção")
-st.write("Este programa permite registrar e analisar os dados de produção.")
-
-# Menu de interações
-opcoes_menu = ["Registrar Produção", "Registrar Defeitos", "Visualizar Dados"]
-escolha = st.sidebar.selectbox("Selecione uma opção:", opcoes_menu)
-
-# Realiza a ação com base na escolha do usuário
-if escolha == "Registrar Produção":
-    registrar_producao()
-elif escolha == "Registrar Defeitos":
-    registrar_defeitos()
-elif escolha == "Visualizar Dados":
-    exibir_dados_producao()
+#
