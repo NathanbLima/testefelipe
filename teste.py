@@ -1,6 +1,12 @@
 import streamlit as st
 import pandas as pd
 
+# Carrega os dados de produção a partir da planilha Excel ou cria uma nova se o arquivo não existir
+try:
+    producao_df = pd.read_excel('dados_producao.xlsx')
+except FileNotFoundError:
+    producao_df = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
+
 # Função para registrar a produção
 def registrar_producao():
     produto = st.text_input("Digite o nome do produto:")
@@ -55,15 +61,4 @@ escolha = st.sidebar.selectbox("Escolha uma opção:", ['Registrar Produção', 
 
 if escolha == 'Registrar Produção':
     registrar_producao()
-    st.success("Produção registrada com sucesso!")
-
-elif escolha == 'Registrar Defeitos':
-    registrar_defeitos()
-    st.success("Defeitos registrados com sucesso!")
-
-elif escolha == 'Visualizar Dados':
-    exibir_dados_producao()
-
-# Acompanhamento on-line
-st.subheader("Acompanhamento on-line")
-st.write("Acompanhe os dados e as informações em tempo real!")
+   
