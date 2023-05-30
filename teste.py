@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
 # Carrega os dados de produção a partir do arquivo Excel ou cria um novo DataFrame vazio
 try:
     producao_df = pd.read_excel('dados_producao.xlsx')
@@ -14,6 +13,7 @@ def salvar_dados_producao():
 
 # Função para registrar a produção
 def registrar_producao():
+    global producao_df  # Adicione essa linha
     produto = st.text_input("Digite o nome do produto:")
     quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, step=1, value=0)
 
@@ -31,6 +31,7 @@ def registrar_producao():
 
 # Função para registrar os defeitos
 def registrar_defeitos():
+    global producao_df  # Adicione essa linha
     produto = st.text_input("Digite o nome do produto:")
     defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, step=1, value=0)
 
