@@ -32,7 +32,7 @@ if opcao == "Registrar produção":
         else:
             # Cria um novo DataFrame com os dados atualizados
             novo_dados = {'Produto': [produto], 'Quantidade': [quantidade], 'Defeitos': [0]}
-            df_dados_producao = df_dados_producao.append(pd.DataFrame(novo_dados), ignore_index=True)
+            df_dados_producao = pd.concat([df_dados_producao, pd.DataFrame(novo_dados)], ignore_index=True)
         
         # Salva os dados no arquivo xlsx
         salvar_dados_producao(df_dados_producao)
