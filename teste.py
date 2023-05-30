@@ -1,60 +1,46 @@
 import streamlit as st
 import pandas as pd
 
-import streamlit as st
-import pandas as pd
-import pygsheets
+# Definir o nome do arquivo xlsx
+nome_arquivo = "dados.xlsx"
 
-# URL do Google Sheets
-spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit#gid=2069898541'
+# Verificar se o arquivo existe, caso contrário criar um DataFrame vazio
+try:
+    df = pd.read_excel(dados)
+except FileNotFoundError:
+    df = pd.DataFrame(columns=["product_name", "producao", "defeitos"])
 
-# Abrir o Google Sheets usando a URL
-gc = pygsheets.authorize(service_file=None)
+# Módulo 1: Entrada de dados
+st.header("Módulo 1: Entrada de dados")
+product_name = st.text_input("Digite o nome do produto:")
+producao = st.number_input("Digite a quantidade de produção:", min_value=0, step=1)
 
-# Abrir a planilha
-sh = gc.open_by_url(spreadsheet_url)
+# Botões para salvar, limpar a base e avançar para o próximo módulo
+salvar_button = st.button("Salvar")
+limpar_button = st.button("Limpar base")
+proximo_button = st.button("Próximo")
 
-# Obter a planilha desejada
-worksheet = sh.sheet1
+# Lógica para os botões
+if salvar_button:
+    # Verificar se o product_name já existe no DataFrame
+    if product_name in df["product_name"].values:
+        # Atualizar a linha correspondente ao product_name
+        df.loc[df["product_name"] == product_name, ["producao"]] = producao
+    else:
+        # Criar uma nova linha no DataFrame
+        nova_linha = pd.DataFrame([[product_name, producao, None]], columns=df.columns)
+        df = df.append(nova_linha, ignore_index=True)
+    # Salvar o DataFrame no arquivo xlsx
+    df.to_excel(dados, index=False)
+    st.success("Informações salvas com sucesso!")
 
-# Obter os valores da planilha
-dados = worksheet.get_all_values()
+if limpar_button:
+    # Limpar todas as informações do DataFrame e do arquivo xlsx
+    df = pd.DataFrame(columns=["product_name", "producao", "defeitos"])
+    df.to_excel(dados, index=False)
+    st.warning("Base de dados limpa!")
 
-# Criar o DataFrame
-df_dados_producao = pd.DataFrame(dados[1:], columns=dados[0])
-
-# Exibir o DataFrame
-st.dataframe(df_dados_producao)
-
-
-# Segmentação "Mostrar estatísticas"
-st.header("Estatísticas")
-df_dados_producao = pd.read_csv(spreadsheet_url)
-st.dataframe(df_dados_producao)
-
-# Menu lateral com as segmentações
-opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos"))
-
-# Função para salvar os dados no Google Sheets
-def salvar_dados(produto, quantidade, defeitos):
-    nova_linha = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': defeitos}
-    df_dados_producao = df_dados_producao.append(nova_linha, ignore_index=True)
-    df_dados_producao.to_csv(spreadsheet_url, index=False)
-
-# Segmentação "Registrar produção"
-if opcao == "Registrar produção":
-    st.header("Registrar Produção")
-    produto = st.text_input("Nome do produto")
-    quantidade = st.number_input("Quantidade de peças produzidas", min_value=0)
-    if st.button("Salvar"):
-        salvar_dados(produto, quantidade, 0)
-        st.success("Dados salvos com sucesso!")
-
-# Segmentação "Registrar defeitos"
-elif opcao == "Registrar defeitos":
-    st.header("Registrar Defeitos")
-    produto = st.text_input("Nome do produto")
-    defeitos = st.number_input("Quantidade de peças defeituosas", min_value=0)
-    if st.button("Salvar"):
-        salvar_dados(produto, 0, defeitos)
-        st.success("Dados salvos com sucesso!")
+if proximo_button:
+    # Avançar para o próximo módulo
+    st.header("Módulo 2: Outras funcionalidades...")
+    # Adicione o código para o próximo módulo aqui
