@@ -5,8 +5,9 @@ import pandas as pd
 producao_df = pd.read_excel('dados_producao.xlsx')
 
 # Função para registrar a produção
-def registrar_producao(produto, quantidade):
-    global producao_df
+def registrar_producao():
+    produto = st.text_input("Digite o nome do produto:")
+    quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, step=1, value=0)
 
     # Verifica se o produto já existe no DataFrame
     if produto in producao_df['Produto'].values:
@@ -21,8 +22,9 @@ def registrar_producao(produto, quantidade):
     producao_df.to_excel('dados_producao.xlsx', index=False)
 
 # Função para registrar os defeitos
-def registrar_defeitos(produto, defeitos):
-    global producao_df
+def registrar_defeitos():
+    produto = st.text_input("Digite o nome do produto:")
+    defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, step=1, value=0)
 
     # Atualiza a quantidade de defeitos para o produto selecionado
     producao_df.loc[producao_df['Produto'] == produto, 'Defeitos'] += defeitos
@@ -32,8 +34,6 @@ def registrar_defeitos(produto, defeitos):
 
 # Função para exibir os dados de produção e informações adicionais
 def exibir_dados_producao():
-    global producao_df
-
     st.subheader("Dados de Produção")
     st.write(producao_df)
 
@@ -57,18 +57,12 @@ st.title("Análise de Produção")
 escolha = st.sidebar.selectbox("Escolha uma opção:", ['Registrar Produção', 'Registrar Defeitos', 'Visualizar Dados'])
 
 if escolha == 'Registrar Produção':
-    produto = st.text_input("Digite o nome do produto:")
-    quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, step=1, value=0)
-    if st.button("Registrar Produção"):
-        registrar_producao(produto, quantidade)
-        st.success("Produção registrada com sucesso!")
+    registrar_producao()
+    st.success("Produção registrada com sucesso!")
 
 elif escolha == 'Registrar Defeitos':
-    produto = st.text_input("Digite o nome do produto:")
-    defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, step=1, value=0)
-    if st.button("Registrar Defeitos"):
-        registrar_defeitos(produto, defeitos)
-        st.success("Defeitos registrados com sucesso!")
+    registrar_defeitos()
+    st.success("Defeitos registrados com sucesso!")
 
 elif escolha == 'Visualizar Dados':
     exibir_dados_producao()
@@ -76,4 +70,3 @@ elif escolha == 'Visualizar Dados':
 # Acompanhamento on-line
 st.subheader("Acompanhamento on-line")
 st.write("Acompanhe os dados e as informações em tempo real!")
-
