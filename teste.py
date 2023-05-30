@@ -1,9 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-import streamlit as st
-import pandas as pd
-
 # URL do arquivo .xlsx
 spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit#gid=2069898541'
 
