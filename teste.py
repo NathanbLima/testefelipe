@@ -1,9 +1,12 @@
 import streamlit as st
 import pandas as pd
 
-# Carrega os dados de produção a partir do arquivo Excel ou cria um novo DataFrame vazio
+producao_df = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
 
-    producao_df = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
+def registrar_producao():
+    # Seu código para registrar a produção aqui
+
+# Restante do seu código...
 
 # Função para salvar os dados de produção no arquivo Excel
 def salvar_dados_producao():
