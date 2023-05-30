@@ -1,52 +1,79 @@
 import streamlit as st
 import pandas as pd
 
+# Carrega os dados de produção a partir da planilha Excel
+producao_df = pd.read_excel('dados_producao.xlsx')
+
+# Função para registrar a produção
+def registrar_producao(produto, quantidade):
+    global producao_df
+
+    # Verifica se o produto já existe no DataFrame
+    if produto in producao_df['Produto'].values:
+        # Atualiza a quantidade de produção
+        producao_df.loc[producao_df['Produto'] == produto, 'Quantidade'] += quantidade
+    else:
+        # Adiciona uma nova linha para o produto
+        novo_produto = {'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}
+        producao_df = producao_df.append(novo_produto, ignore_index=True)
+
+    # Salva os dados atualizados na planilha Excel
+    producao_df.to_excel('dados_producao.xlsx', index=False)
+
+# Função para registrar os defeitos
+def registrar_defeitos(produto, defeitos):
+    global producao_df
+
+    # Atualiza a quantidade de defeitos para o produto selecionado
+    producao_df.loc[producao_df['Produto'] == produto, 'Defeitos'] += defeitos
+
+    # Salva os dados atualizados na planilha Excel
+    producao_df.to_excel('dados_producao.xlsx', index=False)
+
+# Função para exibir os dados de produção e informações adicionais
+def exibir_dados_producao():
+    global producao_df
+
+    st.subheader("Dados de Produção")
+    st.write(producao_df)
+
+    # Converte a coluna "Defeitos" para o tipo numérico
+    producao_df['Defeitos'] = pd.to_numeric(producao_df['Defeitos'])
+
+    produto_reprovacao_semanal = producao_df.loc[producao_df['Defeitos'].idxmax(), 'Produto']
+    produto_maior_producao = producao_df.loc[producao_df['Quantidade'].idxmax(), 'Produto']
+    media_erros_semanais = producao_df['Defeitos'].mean()
+
+    st.subheader("Informações para Apoio a Decisões")
+    st.write("Peça com maior índice de reprovação semanal:", produto_reprovacao_semanal)
+    st.write("Peça com maior quantidade de produção:", produto_maior_producao)
+    st.write("Média de erros semanais:", media_erros_semanais)
+
 # Configurações iniciais
 st.set_page_config(page_title="Análise de Produção", layout="wide")
-
-# Título do aplicativo
 st.title("Análise de Produção")
 
-# Entrada da quantidade de peças produzidas por dia
-producao_dia = st.number_input("Quantidade de peças produzidas por dia:", min_value=0)
+# Menu de interações
+escolha = st.sidebar.selectbox("Escolha uma opção:", ['Registrar Produção', 'Registrar Defeitos', 'Visualizar Dados'])
 
-# Entrada da quantidade de defeitos ocorridos com escolha da peça defeituosa
-defeitos = st.number_input("Quantidade de defeitos ocorridos:", min_value=0)
-peca_defeituosa = st.selectbox("Escolha a peça ao qual o erro está sendo cadastrado:",
-                               ["Peça A", "Peça B", "Peça C", "Peça D"])
+if escolha == 'Registrar Produção':
+    produto = st.text_input("Digite o nome do produto:")
+    quantidade = st.number_input("Digite a quantidade produzida:", min_value=0, step=1, value=0)
+    if st.button("Registrar Produção"):
+        registrar_producao(produto, quantidade)
+        st.success("Produção registrada com sucesso!")
 
-# Armazenamento dos dados em um DataFrame
-dados = pd.DataFrame({
-    "Produção diária": [producao_dia],
-    "Defeitos": [defeitos],
-    "Peça defeituosa": [peca_defeituosa]
-})
+elif escolha == 'Registrar Defeitos':
+    produto = st.text_input("Digite o nome do produto:")
+    defeitos = st.number_input("Digite a quantidade de defeitos:", min_value=0, step=1, value=0)
+    if st.button("Registrar Defeitos"):
+        registrar_defeitos(produto, defeitos)
+        st.success("Defeitos registrados com sucesso!")
 
-# Exibição dos dados na tela
-st.subheader("Dados inseridos:")
-st.write(dados)
-
-# Cálculo e exibição das informações
-st.subheader("Informações para apoio a decisões:")
-
-# Peça com maior índice de reprovação
-maior_reprovacao = dados.groupby("Peça defeituosa")["Defeitos"].sum().idxmax()
-st.write("Peça com maior índice de reprovação:", maior_reprovacao)
-
-# Peça com maior quantidade de produção
-maior_producao = dados["Produção diária"].idxmax()
-st.write("Peça com maior quantidade de produção:", peca_defeituosa[maior_producao])
-
-# Média de erros semanais
-media_erros = dados["Defeitos"].mean()
-st.write("Média de erros semanais:", media_erros)
-
-# Salvando os dados em uma planilha Excel
-dados.to_excel("dados_producao.xlsx", index=False)
-st.write("Dados salvos em 'dados_producao.xlsx'")
+elif escolha == 'Visualizar Dados':
+    exibir_dados_producao()
 
 # Acompanhamento on-line
 st.subheader("Acompanhamento on-line")
 st.write("Acompanhe os dados e as informações em tempo real!")
-
 
