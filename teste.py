@@ -6,7 +6,7 @@ nome_arquivo = "dados.xlsx"
 
 # Verificar se o arquivo existe, caso contrário criar um DataFrame vazio
 try:
-    df = pd.read_excel(dados)
+    df = pd.read_excel(nome_arquivo)
 except FileNotFoundError:
     df = pd.DataFrame(columns=["product_name", "producao", "defeitos"])
 
@@ -31,13 +31,13 @@ if salvar_button:
         nova_linha = pd.DataFrame([[product_name, producao, None]], columns=df.columns)
         df = df.append(nova_linha, ignore_index=True)
     # Salvar o DataFrame no arquivo xlsx
-    df.to_excel(dados, index=False)
+    df.to_excel(nome_arquivo, index=False)
     st.success("Informações salvas com sucesso!")
 
 if limpar_button:
     # Limpar todas as informações do DataFrame e do arquivo xlsx
     df = pd.DataFrame(columns=["product_name", "producao", "defeitos"])
-    df.to_excel(dados, index=False)
+    df.to_excel(nome_arquivo, index=False)
     st.warning("Base de dados limpa!")
 
 if proximo_button:
