@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Definir o nome do arquivo xlsx
-nome_arquivo = "dados.xlsx"
+nome_arquivo = "nome_arquivo"
 
 # Verificar se o arquivo existe, caso contrário criar um DataFrame vazio
 try:
