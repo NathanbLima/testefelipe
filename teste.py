@@ -29,7 +29,7 @@ if salvar_button:
     else:
         # Criar uma nova linha no DataFrame
         nova_linha = pd.DataFrame([[product_name, producao, None]], columns=df.columns)
-        df = df.append(nova_linha, ignore_index=True)
+        df = pd.concat([df, nova_linha], ignore_index=True)
     # Salvar o DataFrame no arquivo xlsx
     df.to_excel(nome_arquivo, index=False)
     st.success("Informações salvas com sucesso!")
