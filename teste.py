@@ -30,8 +30,9 @@ if opcao == "Registrar produção":
             # Atualiza a linha correspondente
             df_dados_producao.loc[df_dados_producao['Produto'] == produto, 'Quantidade'] = quantidade
         else:
-            # Adiciona uma nova linha
-            df_dados_producao = df_dados_producao.append({'Produto': produto, 'Quantidade': quantidade, 'Defeitos': 0}, ignore_index=True)
+            # Cria um novo DataFrame com os dados atualizados
+            novo_dados = {'Produto': [produto], 'Quantidade': [quantidade], 'Defeitos': [0]}
+            df_dados_producao = df_dados_producao.append(pd.DataFrame(novo_dados), ignore_index=True)
         
         # Salva os dados no arquivo xlsx
         salvar_dados_producao(df_dados_producao)
