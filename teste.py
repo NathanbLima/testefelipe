@@ -1,48 +1,55 @@
 import streamlit as st
 import pandas as pd
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
-# Função para ler o arquivo xlsx ou criar um novo DataFrame vazio
-def ler_dados_producao():
-    try:
-        df = pd.read_excel('dados_producao.xlsx')
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
-    return df
+# Configuração das credenciais do Google Sheets
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+client = gspread.authorize(credentials)
 
-# Função para salvar os dados no arquivo xlsx
-def salvar_dados_producao(df):
-    df.to_excel('dados_producao.xlsx', index=False)
+# Abre o arquivo do Google Sheets
+spreadsheet_url = 'https://docs.google.com/spreadsheets/d/11JG59DIymO3f7B1ZQU39k0xtGMMCPDI9/edit?usp=sharing'
+gc = client.open_by_url(spreadsheet_url)
+worksheet = gc.sheet1
 
-# Carrega os dados de produção
-df_dados_producao = ler_dados_producao()
+# Criação de um DataFrame vazio para armazenar os dados
+df_dados_producao = pd.DataFrame(columns=['Produto', 'Quantidade', 'Defeitos'])
 
-# Menu lateral
+# Menu lateral com as segmentações
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
 
+# Função para salvar os dados no Google Sheets
+def salvar_dados(produto, quantidade, defeitos):
+    nova_linha = [produto, quantidade, defeitos]
+    worksheet.append_row(nova_linha)
+
+# Segmentação "Registrar produção"
 if opcao == "Registrar produção":
-    st.header("Registrar produção")
-    produto = st.text_input("Nome do produto (chave única)")
+    st.header("Registrar Produção")
+    produto = st.text_input("Nome do produto")
     quantidade = st.number_input("Quantidade de peças produzidas", min_value=0)
-    
     if st.button("Salvar"):
-        # Verifica se o nome do produto já existe no DataFrame
-        if produto in df_dados_producao['Produto'].values:
-            # Atualiza a linha correspondente
-            df_dados_producao.loc[df_dados_producao['Produto'] == produto, 'Quantidade'] = quantidade
-        else:
-            # Cria um novo DataFrame com os dados atualizados
-            novo_dados = {'Produto': [produto], 'Quantidade': [quantidade], 'Defeitos': [0]}
-            df_dados_producao = pd.concat([df_dados_producao, pd.DataFrame(novo_dados)], ignore_index=True)
-        
-        # Salva os dados no arquivo xlsx
-        salvar_dados_producao(df_dados_producao)
+        salvar_dados(produto, quantidade, 0)
+        st.success("Dados salvos com sucesso!")
 
-        st.success("Informações salvas com sucesso!")
-
+# Segmentação "Registrar defeitos"
 elif opcao == "Registrar defeitos":
-    st.header("Registrar defeitos")
-    # Código para registrar defeitos
+    st.header("Registrar Defeitos")
+    produto = st.text_input("Nome do produto")
+    defeitos = st.number_input("Quantidade de peças defeituosas", min_value=0)
+    if st.button("Salvar"):
+        salvar_dados(produto, 0, defeitos)
+        st.success("Dados salvos com sucesso!")
 
+# Segmentação "Mostrar estatísticas"
 elif opcao == "Mostrar estatísticas":
-    st.header("Mostrar estatísticas")
-    # Código para mostrar estatísticas
+    st.header("Estatísticas")
+    df_dados_producao = pd.DataFrame(worksheet.get_all_records())
+    st.dataframe(df_dados_producao)
+
+# Botão para zerar os dados
+if st.button("Zerar Dados"):
+    worksheet.clear()
+    st.success("Dados zerados com sucesso!")
