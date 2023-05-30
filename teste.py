@@ -1,8 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-# Criação de uma lista vazia para armazenar os dados
-lista_dados_producao = []
+# Função para carregar os dados de produção do cache ou criar uma lista vazia
+@st.cache
+def carregar_dados_producao():
+    return []
+
+# Carrega os dados de produção
+lista_dados_producao = carregar_dados_producao()
 
 # Menu lateral com 3 segmentações
 opcao = st.sidebar.radio("Selecione uma opção:", ("Registrar produção", "Registrar defeitos", "Mostrar estatísticas"))
@@ -43,6 +48,9 @@ elif opcao == "Mostrar estatísticas":
     st.write("Tabela de produção e defeitos por produto:")
     df_dados_producao = pd.DataFrame(lista_dados_producao)
     st.table(df_dados_producao)
+
+# Salva os dados de produção atualizados no cache
+st.cache(func=carregar_dados_producao)(lista_dados_producao)
 
 # Exibir DataFrame atualizado
 st.write("Dados de produção atualizados:")
