@@ -31,7 +31,10 @@ if opcao == "Registrar produção":
                 'Defeitos': 0
             })
         st.success("Dados de produção registrados com sucesso!")
-
+        
+if st.button("Zerar dados"):
+        lista_dados_producao = []
+        st.success("Dados de produção zerados com sucesso!")
 
 # Segmentação "Registrar defeitos"
 elif opcao == "Registrar defeitos":
@@ -49,7 +52,8 @@ elif opcao == "Registrar defeitos":
             st.success("Dados de defeitos registrados com sucesso!")
         else:
             st.error("Produto não encontrado!")
-
+                
+            
 # Segmentação "Mostrar estatísticas"
 elif opcao == "Mostrar estatísticas":
     st.subheader("Estatísticas")
