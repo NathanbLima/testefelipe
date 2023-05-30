@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# Carrega os dados de produção a partir da planilha Excel
+producao_df = pd.read_excel('dados_producao.xlsx')
+
 # Função para registrar a produção
 def registrar_producao():
     produto = st.text_input("Digite o nome do produto:")
